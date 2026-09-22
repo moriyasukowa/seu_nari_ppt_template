@@ -55,6 +55,7 @@ def audit(path):
     FIG = load("figures")
     prs = Presentation(path)
     problems, notes = [], []
+    n_eq = 0            # pictures actually placed from a formula manifest key
 
     for i, sl in enumerate(prs.slides, 1):
         lay = sl.slide_layout.name
@@ -76,6 +77,7 @@ def audit(path):
             if sh.shape_type is not None and "PICTURE" in str(sh.shape_type):
                 pics.append((sh.name, w, h, b, r))
                 if sh.name in EQ:
+                    n_eq += 1
                     k = round(w / EQ[sh.name]["w"], 3)
                     scales.setdefault(k, []).append(sh.name)
                 elif sh.name in FIG and w and w < MIN_FIG_NOTE:
@@ -132,6 +134,15 @@ def audit(path):
         if not lay.startswith(("封面", "章节过渡", "致谢")) and not title:
             problems.append("p%d (%s) has an EMPTY TITLE" % (i, lay))
 
+    # 5. a vacuous pass is worse than a failure. If nothing was placed from the
+    #    formula manifest, check 1 silently did not run -- and the report would
+    #    still say "0 problem(s)", which reads as all-clear. Say so out loud.
+    declared = [k for k in EQ if not k.startswith("_")]
+    if n_eq == 0 and declared:
+        notes.append("no formula placed on any slide -> the scale-uniformity check "
+                     "DID NOT RUN (the manifest declares %d). If this deck should "
+                     "carry formulas, the PNGs are missing or stale: rerun "
+                     "make_formulas.py before trusting this report." % len(declared))
     return problems, notes
 
 
