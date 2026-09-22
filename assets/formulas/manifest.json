@@ -1,0 +1,71 @@
+{
+  "_render": {
+    "dpi": 400,
+    "base_pt": 10,
+    "ink": "1A1A1A"
+  },
+  "demo_objective": {
+    "file": "assets/formulas/demo_objective.png",
+    "w": 996,
+    "h": 163,
+    "dpi": 400,
+    "kind": "math",
+    "tag": "(1)"
+  },
+  "demo_constraint": {
+    "file": "assets/formulas/demo_constraint.png",
+    "w": 1456,
+    "h": 61,
+    "dpi": 400,
+    "kind": "math",
+    "tag": "(2)"
+  },
+  "demo_update": {
+    "file": "assets/formulas/demo_update.png",
+    "w": 642,
+    "h": 74,
+    "dpi": 400,
+    "kind": "math",
+    "tag": "(3)"
+  },
+  "demo_gap": {
+    "file": "assets/formulas/demo_gap.png",
+    "w": 667,
+    "h": 156,
+    "dpi": 400,
+    "kind": "math",
+    "tag": "(4)"
+  },
+  "demo_subproblem": {
+    "file": "assets/formulas/demo_subproblem.png",
+    "w": 763,
+    "h": 106,
+    "dpi": 400,
+    "kind": "math",
+    "tag": "(5)"
+  },
+  "demo_pseudo": {
+    "file": "assets/formulas/demo_pseudo.png",
+    "w": 2520,
+    "h": 1237,
+    "dpi": 400,
+    "kind": "algo",
+    "caption": "带收敛判据与步长回退的梯度下降"
+  },
+  "demo_pseudo_a": {
+    "file": "assets/formulas/demo_pseudo_a.png",
+    "w": 2520,
+    "h": 454,
+    "dpi": 400,
+    "kind": "algo",
+    "split_of": "demo_pseudo"
+  },
+  "demo_pseudo_b": {
+    "file": "assets/formulas/demo_pseudo_b.png",
+    "w": 2520,
+    "h": 819,
+    "dpi": 400,
+    "kind": "algo",
+    "split_of": "demo_pseudo"
+  }
+}

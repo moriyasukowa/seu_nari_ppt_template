@@ -1,0 +1,15 @@
+# 构建/渲染的临时产物（都会被下次运行重建）
+__pycache__/
+*.pyc
+build/_formula_work/
+build/_shell.pptx
+_preview/
+
+# 取材脚本的中间件（改源后由脚本重生成）
+build/_math_spec.json
+build/_refs.json
+
+# 系统杂物
+Thumbs.db
+desktop.ini
+.DS_Store

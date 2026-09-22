@@ -1,0 +1,15 @@
+{
+  "nc_network": {
+    "file": "assets/figures/nc_network.png",
+    "w": 973,
+    "h": 636,
+    "source": "路网图NC.png"
+  },
+  "resilience": {
+    "file": "assets/figures/resilience.png",
+    "w": 2216,
+    "h": 1184,
+    "source": "韧性图.pdf",
+    "dpi": 400
+  }
+}
