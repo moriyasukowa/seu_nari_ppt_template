@@ -79,11 +79,13 @@ def key_for(name, taken):
 
 def rasterise(src_name, key):
     src = os.path.join(SOURCE_DIR, src_name)
-    out = os.path.join(DEST, key)
+    # ⚠️ 输出必须是相对名 + cwd=DEST：pdftocairo 会把含非 ASCII 的**绝对输出
+    # 路径**过 ANSI 代码页弄坏（"Error opening output file"），输入侧不受影响。
+    # 详见 make_formulas.py 里同样的注释。
     # -singlefile: without it pdftocairo appends "-1" to the page name
     _run([os.path.join(TEXBIN, "pdftocairo.exe"), "-png", "-singlefile",
-          "-r", str(DPI), src, out], TEXBIN)
-    png = out + ".png"
+          "-r", str(DPI), os.path.abspath(src), key], DEST)
+    png = os.path.join(DEST, key + ".png")
     if not os.path.exists(png):
         raise RuntimeError("no PNG for %s" % key)
     return png

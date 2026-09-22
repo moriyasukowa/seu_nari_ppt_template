@@ -845,6 +845,14 @@ taskkill /F /IM POWERPNT.EXE     # ❌ 关掉这台机器上所有人的 PowerPo
 - **`standalone` 里放 `align` / `gather` 要包一层 `aligned` / `gathered`**，
   否则报 `Missing \endgroup`；`algorithm2e` 用 `[H]` 不需要 float。
 - **算法切分阈值别调高**：切分只是极长清单的兜底，正常长度切开会打断阅读（§5.3.2）。
+- ⚠️ **`pdftocairo` 不能接受「含非 ASCII 的绝对输出路径」**。它把 argv 过一遍 ANSI
+  代码页，中文/日文路径会被弄坏，报 `Error opening output file` —— 而**同样含中文的
+  输入路径没事**，**相对输出名 + `cwd` 也没事**。项目目录叫 `ppt模板测试`，所以这不是
+  假想问题。实测三种组合：绝对+ASCII ✓ / 绝对+中文 ✗ / 相对+cwd(中文) ✓。
+  `make_formulas.py` 与 `prep_figures.py` 都已改成"相对名 + cwd"。
+- **`out/*.pptx` 是确定性的**：`build_pptx.py` 保存后会重写一遍 zip、把条目时间戳钉死。
+  python-pptx 默认给每个条目写当前时间，逐部件字节一致但**文件哈希每次都变** ——
+  对跟踪这个二进制的仓库就是每次重建一个 1MB 的假 diff。
 - **`tbl()` 的 `note=` 参数会遮蔽模块级的 `note()` 函数**。`slides.py` 里已加
   `_note_fn = note` 别名绕开；你自己在别的模块里写类似签名时注意这个陷阱。
 

@@ -9,6 +9,7 @@ Usage:
 import copy
 import os
 import sys
+import zipfile
 
 from lxml import etree
 from pptx import Presentation
@@ -397,6 +398,28 @@ def build_layouts(prs, tok, image_parts):
 # main
 # ============================================================================
 
+def _normalize_zip(path, stamp=(2026, 1, 1, 0, 0, 0)):
+    """Rewrite `path` with a fixed timestamp on every zip entry.
+
+    python-pptx stamps the current time on each entry, so two builds of identical
+    content produce different file hashes. Every part is byte-identical (verified)
+    — only the zip metadata moves. For a repo that tracks out/*.pptx that means a
+    spurious 1 MB binary diff on every rebuild, so pin the timestamps.
+    """
+    tmp = path + ".tmp"
+    with zipfile.ZipFile(path) as src:
+        infos = src.infolist()
+        with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as dst:
+            for info in infos:
+                fixed = zipfile.ZipInfo(info.filename, date_time=stamp)
+                fixed.compress_type = info.compress_type
+                fixed.external_attr = info.external_attr
+                fixed.internal_attr = info.internal_attr
+                fixed.create_system = info.create_system
+                dst.writestr(fixed, src.read(info.filename))
+    os.replace(tmp, path)
+
+
 def new_prs():
     prs = Presentation()
     prs.slide_width = Emu(12192000)
@@ -428,6 +451,7 @@ def main():
         n = len(S.build_slides(deck, tok))
         os.makedirs(os.path.dirname(OUT), exist_ok=True)
         deck.save(OUT)
+        _normalize_zip(OUT)          # 固定 zip 时间戳，重建不再产生假 diff
         print("phase C ok -> %d slides -> %s" % (n, OUT))
     return 0
 

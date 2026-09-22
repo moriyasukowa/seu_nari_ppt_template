@@ -141,9 +141,13 @@ def render(key, body, kind="math", caption=None):
     pdf = os.path.join(WORK, key + ".pdf")
     if not os.path.exists(pdf):
         raise RuntimeError("no PDF produced for %s" % key)
+    # ⚠️ 输出路径必须是**相对名**。pdftocairo 把 argv 过一遍 ANSI 代码页，
+    # 含非 ASCII 的**绝对输出路径**会被弄坏，报 "Error opening output file" ——
+    # 而同样含中文的输入路径没事，相对输出名 + cwd 也没事。本项目目录是中文，
+    # 所以这不是假想问题。（实测：绝对+ASCII 成功；绝对+中文 失败；相对+中文cwd 成功。）
     # -singlefile: without it pdftocairo appends "-1" to the page name
     _run([os.path.join(TEXBIN, "pdftocairo.exe"), "-png", "-transp",
-          "-singlefile", "-r", str(DPI), pdf, os.path.join(WORK, key)], WORK)
+          "-singlefile", "-r", str(DPI), pdf, key], WORK)
     png = os.path.join(WORK, key + ".png")
     if not os.path.exists(png):
         raise RuntimeError("no PNG produced for %s" % key)
